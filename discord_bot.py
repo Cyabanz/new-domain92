@@ -43,7 +43,8 @@ EMOJIS = {
     "lunar": "<:IMG_0347:1408216520034881536>",
     "frogiees": "<:emoji_5:1408292931579678821>",
     "extrememath": "<:emoji_6:1408295630727806996>",
-    "petezah": "<:emoji_7:1408297382570889227>"
+    "petezah": "<:emoji_7:1408297382570889227>",
+    "loading": "<:1320138023291060386:1403395950625427519>"
 }
 
 # Active user sessions to prevent conflicts
@@ -901,7 +902,7 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
         
         # Create embed with clickable links
         embed = discord.Embed(
-            title="🎉 Your Domain92 Links Are Ready!",
+            title=f"{EMOJIS['loading']} Your Domain92 Links Are Ready!",
             description=f"Created {len(domains)} domain(s) on **{server_name}** ({server_ip})",
             color=0x00ff00,
             timestamp=datetime.now()

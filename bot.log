@@ -1,7 +1,7 @@
 nohup: ignoring input
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
-[2025-08-22 04:04:00] [INFO    ] discord.client: logging in using static token
+[2025-08-22 04:08:27] [INFO    ] discord.client: logging in using static token
 INFO:discord.client:logging in using static token
-[2025-08-22 04:04:01] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 5c08de2642f04e94a8e04a48087dd051).
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5c08de2642f04e94a8e04a48087dd051).
+[2025-08-22 04:08:27] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 33f18d98b05d12d71fefdd3ce28ffbad).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 33f18d98b05d12d71fefdd3ce28ffbad).
 INFO:__main__:Domain-Next#7897 has connected to Discord!

@@ -46,3 +46,8 @@ echo "🎯 Vapor server    - <:IMG_0346:1408216290752987197> (199.180.255.67)"
 echo "🎯 gn-math server  - <:IMG_0345:1408216292414062612> (107.174.34.44)"
 echo "🎯 Frogiees Arcade - <:emoji_5:1408292931579678821> (152.53.81.196)"
 echo "🎯 ExtremeMath     - <:emoji_6:1408295630727806996> (152.53.38.152)"
+echo
+echo "=== Access Controls ==="
+echo "🔒 Allowed Server: 1394337103441301524"
+echo "♾️ Unlimited User: 1058841701495615630"
+echo "📩 DM Links: Loading emoji <:1320138023291060386:1403395950625427519>"
