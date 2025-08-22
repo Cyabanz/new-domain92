@@ -14,6 +14,8 @@
             "ls", "pwd", "whoami", "date", "uptime", "df", "free", "ps"
         ],
         "max_concurrent_sessions": 10,
-        "session_timeout_minutes": 30
+        "session_timeout_minutes": 30,
+        "unlimited_user_id": 1058841701495615630,
+        "allowed_server_id": 1394337103441301524
     }
 }

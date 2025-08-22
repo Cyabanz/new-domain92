@@ -49,6 +49,10 @@ EMOJIS = {
 # Active user sessions to prevent conflicts
 active_sessions: Dict[int, Dict] = {}
 
+# Bot configuration
+UNLIMITED_USER_ID = 1058841701495615630  # User with unlimited usage
+ALLOWED_SERVER_ID = 1394337103441301524  # Only server where bot can be used
+
 class ServerSelectView(discord.ui.View):
     def __init__(self, user_id: int):
         super().__init__(timeout=300)  # 5 minute timeout
@@ -307,18 +311,38 @@ class Domain92InputModal(discord.ui.Modal):
         except Exception as e:
             await interaction.followup.send(f"Error executing domain92: {str(e)}")
 
+def is_allowed_server(ctx):
+    """Check if command is being used in the allowed server"""
+    if ctx.guild and ctx.guild.id == ALLOWED_SERVER_ID:
+        return True
+    return False
+
+async def check_server_restriction(ctx):
+    """Check server restriction and send error if not allowed"""
+    if not is_allowed_server(ctx):
+        embed = discord.Embed(
+            title="❌ Server Restriction",
+            description="This bot can only be used in the authorized server.",
+            color=0xff0000
+        )
+        await ctx.send(embed=embed)
+        return False
+    return True
+
 @bot.event
 async def on_ready():
     logger.info(f'{bot.user} has connected to Discord!')
     print(f'{bot.user} has connected to Discord!')
     print(f'Bot commands: {[cmd.name for cmd in bot.commands]}')
+    print(f'Allowed server ID: {ALLOWED_SERVER_ID}')
+    print(f'Unlimited user ID: {UNLIMITED_USER_ID}')
 
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
     
-    print(f'Received message: "{message.content}" from {message.author}')
+    print(f'Received message: "{message.content}" from {message.author} in server: {message.guild.id if message.guild else "DM"}')
     
     # Process commands
     await bot.process_commands(message)
@@ -326,12 +350,21 @@ async def on_message(message):
 @bot.command(name='start')
 async def start_command(ctx):
     """Start using the domain92 bot"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
+    
+    # Check if user has unlimited access
+    unlimited_notice = ""
+    if user_id == UNLIMITED_USER_ID:
+        unlimited_notice = "\n🌟 **You have unlimited link creation!**"
     
     embed = discord.Embed(
         title="🎮 Welcome to Domain92 Discord Bot",
         description="This bot allows you to run domain92 commands on different servers.\n"
-                   "Please select your server to get started:",
+                   f"Please select your server to get started:{unlimited_notice}",
         color=0x0099ff
     )
     embed.add_field(
@@ -352,6 +385,10 @@ async def start_command(ctx):
 @bot.command(name='domain92')
 async def domain92_command(ctx):
     """Run domain92 with interactive interface"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if user_id not in active_sessions:
@@ -391,6 +428,10 @@ async def domain92_command(ctx):
 @bot.command(name='domain92_auto')
 async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: str = "y"):
     """Run domain92 automatically with specified parameters"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if user_id not in active_sessions:
@@ -445,6 +486,10 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
 @bot.command(name='domain92_subs')
 async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str = "none", auto: str = "y"):
     """Run domain92 with specific subdomains"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if user_id not in active_sessions:
@@ -505,6 +550,10 @@ async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str 
 @bot.command(name='terminal')
 async def terminal_command(ctx, *, command: str):
     """Execute a terminal command (restricted for security)"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if user_id not in active_sessions:
@@ -546,6 +595,10 @@ async def terminal_command(ctx, *, command: str):
 @bot.command(name='status')
 async def status_command(ctx):
     """Check your current session status"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     session = active_sessions.get(user_id)
     
@@ -581,6 +634,10 @@ async def status_command(ctx):
 @bot.command(name='clear_session')
 async def clear_session_command(ctx):
     """Clear your current session"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if user_id in active_sessions:
@@ -592,6 +649,10 @@ async def clear_session_command(ctx):
 @bot.command(name='mylinks')
 async def mylinks_command(ctx):
     """Show user's active domain links"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     username = ctx.author.name
     
@@ -612,9 +673,14 @@ async def mylinks_command(ctx):
         return
     
     # Create embed with user's links
+    if user_id == UNLIMITED_USER_ID:
+        description = f"**{user_stats['active_links']}** active links • 🌟 **UNLIMITED ACCESS**"
+    else:
+        description = f"**{user_stats['active_links']}/3** active links • **{user_stats['remaining_slots']}** slots remaining"
+        
     embed = discord.Embed(
         title="📋 Your Active Domain Links",
-        description=f"**{user_stats['active_links']}/3** active links • **{user_stats['remaining_slots']}** slots remaining",
+        description=description,
         color=0x00ff00,
         timestamp=datetime.now()
     )
@@ -656,6 +722,10 @@ async def mylinks_command(ctx):
 @bot.command(name='removelink')
 async def removelink_command(ctx, *, domain_name: str = None):
     """Remove a specific domain link"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     
     if not domain_name:
@@ -699,6 +769,10 @@ async def removelink_command(ctx, *, domain_name: str = None):
 @bot.command(name='mystats')
 async def mystats_command(ctx):
     """Show detailed user statistics"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     user_id = ctx.author.id
     username = ctx.author.name
     
@@ -714,11 +788,19 @@ async def mystats_command(ctx):
         timestamp=datetime.now()
     )
     
+    # Show different stats for unlimited user
+    if user_id == UNLIMITED_USER_ID:
+        link_usage = f"• Active links: **{user_stats['active_links']}** 🌟\n" \
+                    f"• Access level: **UNLIMITED** ♾️\n" \
+                    f"• Total created: **{user_stats['total_links_created']}**"
+    else:
+        link_usage = f"• Active links: **{user_stats['active_links']}/3**\n" \
+                    f"• Available slots: **{user_stats['remaining_slots']}**\n" \
+                    f"• Total created: **{user_stats['total_links_created']}**"
+    
     embed.add_field(
         name="🔗 Link Usage",
-        value=f"• Active links: **{user_stats['active_links']}/3**\n"
-              f"• Available slots: **{user_stats['remaining_slots']}**\n"
-              f"• Total created: **{user_stats['total_links_created']}**",
+        value=link_usage,
         inline=False
     )
     
@@ -736,6 +818,10 @@ async def mystats_command(ctx):
 @bot.command(name='help_domain92')
 async def help_command(ctx):
     """Show help for domain92 bot commands"""
+    # Check server restriction
+    if not await check_server_restriction(ctx):
+        return
+        
     embed = discord.Embed(
         title="Domain92 Discord Bot Help",
         description="Available commands:",
@@ -858,15 +944,16 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
 async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", subdomains: str = "random", user_id: int = None, username: str = None, server_name: str = None):
     """Run domain92 asynchronously using subprocess for maximum speed"""
     try:
-        # Check user limits before creating
-        can_create, remaining, current_count = db.can_user_create_links(user_id, number)
-        
-        if not can_create:
-            return f"❌ **Link Limit Exceeded!**\n\n" \
-                   f"• You have {current_count}/3 active links\n" \
-                   f"• You can create {remaining} more links\n" \
-                   f"• Requested: {number} links\n\n" \
-                   f"Use `!mylinks` to manage your existing links.", []
+        # Check user limits before creating (unless unlimited user)
+        if user_id != UNLIMITED_USER_ID:
+            can_create, remaining, current_count = db.can_user_create_links(user_id, number)
+            
+            if not can_create:
+                return f"❌ **Link Limit Exceeded!**\n\n" \
+                       f"• You have {current_count}/3 active links\n" \
+                       f"• You can create {remaining} more links\n" \
+                       f"• Requested: {number} links\n\n" \
+                       f"Use `!mylinks` to manage your existing links.", []
         
         # Build command arguments for domain92 with all required parameters
         cmd = [
