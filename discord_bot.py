@@ -31,7 +31,8 @@ SERVERS = {
     "Lunar": "172.93.101.294",
     "Vapor": "199.180.255.67",
     "gn-math": "107.174.34.44",
-    "Frogiees Arcade": "152.53.81.196"
+    "Frogiees Arcade": "152.53.81.196",
+    "ExtremeMath": "152.53.38.152"
 }
 
 # Custom emojis for servers and UI
@@ -40,7 +41,8 @@ EMOJIS = {
     "gn_math": "<:IMG_0345:1408216292414062612>", 
     "vapor": "<:IMG_0346:1408216290752987197>",
     "lunar": "<:IMG_0347:1408216520034881536>",
-    "frogiees": "<:emoji_5:1408292931579678821>"
+    "frogiees": "<:emoji_5:1408292931579678821>",
+    "extrememath": "<:emoji_6:1408295630727806996>"
 }
 
 # Active user sessions to prevent conflicts
@@ -90,6 +92,12 @@ class ServerSelectView(discord.ui.View):
                 description="Frogiees Arcade server",
                 emoji=EMOJIS["frogiees"]
             ),
+            discord.SelectOption(
+                label="ExtremeMath", 
+                value="152.53.38.152",
+                description="ExtremeMath server",
+                emoji=EMOJIS["extrememath"]
+            ),
         ]
     )
     async def server_select(self, interaction: discord.Interaction, select: discord.ui.Select):
@@ -124,6 +132,8 @@ class ServerSelectView(discord.ui.View):
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
             elif server_name == "Frogiees Arcade":
                 server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
+            elif server_name == "ExtremeMath":
+                server_emoji = EMOJIS["extrememath"]  # ExtremeMath emoji
             
             embed = discord.Embed(
                 title=f"{server_emoji} Server Selected",
@@ -180,6 +190,8 @@ class Domain92CommandView(discord.ui.View):
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
             elif server_name == "Frogiees Arcade":
                 server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
+            elif server_name == "ExtremeMath":
+                server_emoji = EMOJIS["extrememath"]  # ExtremeMath emoji
                 
             embed = discord.Embed(
                 title=f"{server_emoji} Session Status",
@@ -328,7 +340,8 @@ async def start_command(ctx):
               f"{EMOJIS['lunar']} **Lunar** - 172.93.101.294\n"
               f"{EMOJIS['vapor']} **Vapor** - 199.180.255.67\n"
               f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44\n"
-              f"{EMOJIS['frogiees']} **Frogiees Arcade** - 152.53.81.196",
+              f"{EMOJIS['frogiees']} **Frogiees Arcade** - 152.53.81.196\n"
+              f"{EMOJIS['extrememath']} **ExtremeMath** - 152.53.38.152",
         inline=False
     )
     
@@ -362,6 +375,8 @@ async def domain92_command(ctx):
         server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
     elif server_name == "Frogiees Arcade":
         server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
+    elif server_name == "ExtremeMath":
+        server_emoji = EMOJIS["extrememath"]  # ExtremeMath emoji
     
     embed = discord.Embed(
         title=f"{server_emoji} Domain92 - {server_name}",
@@ -549,6 +564,8 @@ async def status_command(ctx):
             server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
         elif server_name == "Frogiees Arcade":
             server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
+        elif server_name == "ExtremeMath":
+            server_emoji = EMOJIS["extrememath"]  # ExtremeMath emoji
         
         embed = discord.Embed(
             title=f"{server_emoji} Session Status",

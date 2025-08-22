@@ -62,6 +62,7 @@ The bot includes these predefined servers:
 - **Vapor**: 199.180.255.67 (vapor emoji)
 - **gn-math**: 107.174.34.44 (kahoot emoji)
 - **Frogiees Arcade**: 152.53.81.196 (frogiees emoji)
+- **ExtremeMath**: 152.53.38.152 (extrememath emoji)
 
 ## Multi-User Features
 
