@@ -33,7 +33,8 @@ SERVERS = {
     "PeteZah": "62.72.3.251",
     "Shadow": "104.243.38.18", 
     "Lunar": "199.180.255.67",
-    "Lunar Alt": "172.93.101.294"
+    "Lunar Alt": "172.93.101.294",
+    "gn-math": "107.174.34.44"
 }
 
 # Custom emojis for servers and UI
@@ -58,8 +59,8 @@ class ServerSelectView(discord.ui.View):
             discord.SelectOption(
                 label="PeteZah", 
                 value="62.72.3.251",
-                description="PeteZah's server",
-                emoji=EMOJIS["gn_math"]
+                description="PeteZah's server"
+                # No emoji for PeteZah
             ),
             discord.SelectOption(
                 label="Shadow", 
@@ -76,8 +77,14 @@ class ServerSelectView(discord.ui.View):
             discord.SelectOption(
                 label="Lunar Alt", 
                 value="172.93.101.294",
-                description="Lunar's alternative server",
+                description="Lunar Alt server (Vapor)",
                 emoji=EMOJIS["vapor"]
+            ),
+            discord.SelectOption(
+                label="gn-math", 
+                value="107.174.34.44",
+                description="gn-math server (Kahoot)",
+                emoji=EMOJIS["gn_math"]
             ),
         ]
     )
@@ -104,11 +111,13 @@ class ServerSelectView(discord.ui.View):
             if server_name == "Shadow":
                 server_emoji = EMOJIS["shadow"]
             elif server_name == "PeteZah":
-                server_emoji = EMOJIS["gn_math"]
+                server_emoji = ""  # No emoji for PeteZah
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
             elif server_name == "Lunar Alt":
-                server_emoji = EMOJIS["vapor"]
+                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+            elif server_name == "gn-math":
+                server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
             
             embed = discord.Embed(
                 title=f"{server_emoji} Server Selected",
@@ -155,11 +164,13 @@ class Domain92CommandView(discord.ui.View):
             if server_name == "Shadow":
                 server_emoji = EMOJIS["shadow"]
             elif server_name == "PeteZah":
-                server_emoji = EMOJIS["gn_math"]
+                server_emoji = ""  # No emoji for PeteZah
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
             elif server_name == "Lunar Alt":
-                server_emoji = EMOJIS["vapor"]
+                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+            elif server_name == "gn-math":
+                server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
                 
             embed = discord.Embed(
                 title=f"{server_emoji} Session Status",
@@ -263,10 +274,11 @@ async def start_command(ctx):
     )
     embed.add_field(
         name="🖥️ Available Servers",
-        value=f"{EMOJIS['gn_math']} **PeteZah** - 62.72.3.251\n"
+        value=f"**PeteZah** - 62.72.3.251\n"
               f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
               f"{EMOJIS['lunar']} **Lunar** - 199.180.255.67\n"
-              f"{EMOJIS['vapor']} **Lunar Alt** - 172.93.101.294",
+              f"{EMOJIS['vapor']} **Lunar Alt** - 172.93.101.294\n"
+              f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44",
         inline=False
     )
     
@@ -291,11 +303,13 @@ async def domain92_command(ctx):
     if server_name == "Shadow":
         server_emoji = EMOJIS["shadow"]
     elif server_name == "PeteZah":
-        server_emoji = EMOJIS["gn_math"]
+        server_emoji = ""  # No emoji for PeteZah
     elif server_name == "Lunar":
         server_emoji = EMOJIS["lunar"]
     elif server_name == "Lunar Alt":
-        server_emoji = EMOJIS["vapor"]
+        server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+    elif server_name == "gn-math":
+        server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
     
     embed = discord.Embed(
         title=f"{server_emoji} Domain92 - {server_name}",
@@ -395,11 +409,13 @@ async def status_command(ctx):
         if server_name == "Shadow":
             server_emoji = EMOJIS["shadow"]
         elif server_name == "PeteZah":
-            server_emoji = EMOJIS["gn_math"]
+            server_emoji = ""  # No emoji for PeteZah
         elif server_name == "Lunar":
             server_emoji = EMOJIS["lunar"]
         elif server_name == "Lunar Alt":
-            server_emoji = EMOJIS["vapor"]
+            server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+        elif server_name == "gn-math":
+            server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
         
         embed = discord.Embed(
             title=f"{server_emoji} Session Status",
@@ -456,10 +472,11 @@ async def help_command(ctx):
     
     embed.add_field(
         name="🖥️ Available Servers",
-        value=f"• {EMOJIS['gn_math']} **PeteZah**: 62.72.3.251\n"
+        value=f"• **PeteZah**: 62.72.3.251\n"
               f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
               f"• {EMOJIS['lunar']} **Lunar**: 199.180.255.67\n"
-              f"• {EMOJIS['vapor']} **Lunar Alt**: 172.93.101.294",
+              f"• {EMOJIS['vapor']} **Lunar Alt**: 172.93.101.294\n"
+              f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44",
         inline=False
     )
     
