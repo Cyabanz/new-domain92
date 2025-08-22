@@ -6,3 +6,11 @@ INFO:discord.client:logging in using static token
 [2025-08-22 03:11:00] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 190c821abde66692edfb52bc2facd650).
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 190c821abde66692edfb52bc2facd650).
 INFO:__main__:Domain-Next#7897 has connected to Discord!
+[2025-08-22 03:11:32] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
+[2025-08-22 03:11:49] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
+ERROR:discord.ext.commands.bot:Ignoring exception in command None
+discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
