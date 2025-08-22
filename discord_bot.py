@@ -167,6 +167,15 @@ class Domain92InputModal(discord.ui.Modal):
             default="y"
         )
         self.add_item(self.auto_captcha)
+        
+        self.pages_input = discord.ui.TextInput(
+            label="Pages to scrape (optional)",
+            placeholder="e.g., 1-5 or 1,3,5 (default: 1-5)",
+            required=False,
+            max_length=20,
+            default="1-5"
+        )
+        self.add_item(self.pages_input)
     
     async def on_submit(self, interaction):
         await interaction.response.defer()
@@ -175,6 +184,7 @@ class Domain92InputModal(discord.ui.Modal):
             number = int(self.number_input.value)
             webhook = self.webhook_input.value or "none"
             auto = self.auto_captcha.value.lower() == "y"
+            pages = self.pages_input.value or "1-5"
             
             # Execute domain92 with the provided parameters
             result = await run_domain92_async(
@@ -182,6 +192,7 @@ class Domain92InputModal(discord.ui.Modal):
                 number=number,
                 webhook=webhook,
                 auto=auto,
+                pages=pages,
                 user_id=self.user_id
             )
             
@@ -261,6 +272,7 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
             number=number,
             webhook=webhook,
             auto=(auto.lower() == "y"),
+            pages="1-5",  # Default pages for auto command
             user_id=user_id
         )
         
@@ -387,16 +399,18 @@ async def help_command(ctx):
     
     await ctx.send(embed=embed)
 
-async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, user_id: int = None):
+async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", user_id: int = None):
     """Run domain92 asynchronously using subprocess for maximum speed"""
     try:
-        # Build command arguments for domain92
+        # Build command arguments for domain92 with all required parameters
         cmd = [
             "python3", "-m", "domain92",
             "--ip", ip,
             "--number", str(number),
             "--webhook", webhook,
-            "--silent"  # Reduce output for Discord
+            "--silent",  # Reduce output for Discord
+            "--pages", pages,  # Use provided pages parameter
+            "--subdomains", "random"  # Default subdomains to avoid prompt
         ]
         
         if auto:
