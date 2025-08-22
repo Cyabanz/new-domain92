@@ -14,3 +14,6 @@ asyncio
 
 # Additional utility dependencies
 typing-extensions>=4.0.0
+
+# Database (SQLite is built into Python)
+# No additional dependencies needed for SQLite3

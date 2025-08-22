@@ -4,11 +4,13 @@ import asyncio
 import subprocess
 import os
 import json
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 import logging
 from datetime import datetime
 import sys
 import importlib.util
+import re
+from database import db
 
 # Import domain92 functionality - using subprocess approach to avoid import conflicts
 # We'll use subprocess calls instead of direct imports to avoid execution conflicts
@@ -238,24 +240,42 @@ class Domain92InputModal(discord.ui.Modal):
             subdomains = self.subdomains_input.value or "random"
             
             # Execute domain92 with the provided parameters
-            result = await run_domain92_async(
+            result, created_domains = await run_domain92_async(
                 ip=self.server_ip,
                 number=number,
                 webhook=webhook,
                 auto=auto,
                 pages=pages,
                 subdomains=subdomains,
-                user_id=self.user_id
+                user_id=self.user_id,
+                username=interaction.user.name,
+                server_name=active_sessions[self.user_id]['server_name']
             )
             
-            # Send result back to user
-            if len(result) > 2000:
-                # Split long messages
-                chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
-                for chunk in chunks:
-                    await interaction.followup.send(f"```\n{chunk}\n```")
+            # Send clickable links to user's DM if domains were created
+            if created_domains:
+                dm_result = await send_links_to_user_dm(
+                    interaction.user, 
+                    created_domains, 
+                    active_sessions[self.user_id]['server_name'],
+                    self.server_ip
+                )
+                
+                # Notify about DM
+                await interaction.followup.send(
+                    f"✅ **Success!** Created {len(created_domains)} domain(s)\n"
+                    f"📩 **Check your DMs** for clickable links!\n"
+                    f"🔗 Use `!mylinks` to manage your domains"
+                )
             else:
-                await interaction.followup.send(f"```\n{result}\n```")
+                # Send result back to user if no domains were extracted
+                if len(result) > 2000:
+                    # Split long messages
+                    chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
+                    for chunk in chunks:
+                        await interaction.followup.send(f"```\n{chunk}\n```")
+                else:
+                    await interaction.followup.send(f"```\n{result}\n```")
                 
         except ValueError:
             await interaction.followup.send("Invalid number provided. Please enter a valid integer.")
@@ -352,23 +372,41 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
     await ctx.send(f"Running domain92 on {session['server_name']} ({server_ip})...")
     
     try:
-        result = await run_domain92_async(
+        result, created_domains = await run_domain92_async(
             ip=server_ip,
             number=number,
             webhook=webhook,
             auto=(auto.lower() == "y"),
             pages="1-5",  # Default pages for auto command
             subdomains="random",  # Default subdomains for auto command
-            user_id=user_id
+            user_id=user_id,
+            username=ctx.author.name,
+            server_name=session['server_name']
         )
         
-        # Send result
-        if len(result) > 2000:
-            chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
-            for chunk in chunks:
-                await ctx.send(f"```\n{chunk}\n```")
+        # Send clickable links to user's DM if domains were created
+        if created_domains:
+            dm_result = await send_links_to_user_dm(
+                ctx.author, 
+                created_domains, 
+                session['server_name'],
+                server_ip
+            )
+            
+            # Notify about DM
+            await ctx.send(
+                f"✅ **Success!** Created {len(created_domains)} domain(s)\n"
+                f"📩 **Check your DMs** for clickable links!\n"
+                f"🔗 Use `!mylinks` to manage your domains"
+            )
         else:
-            await ctx.send(f"```\n{result}\n```")
+            # Send result if no domains were extracted
+            if len(result) > 2000:
+                chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
+                for chunk in chunks:
+                    await ctx.send(f"```\n{chunk}\n```")
+            else:
+                await ctx.send(f"```\n{result}\n```")
             
     except Exception as e:
         await ctx.send(f"Error: {str(e)}")
@@ -394,23 +432,41 @@ async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str 
     await ctx.send(f"🚀 Creating {number} domains with {subdomain_display} on {session['server_name']} ({server_ip})...")
     
     try:
-        result = await run_domain92_async(
+        result, created_domains = await run_domain92_async(
             ip=server_ip,
             number=number,
             webhook=webhook,
             auto=(auto.lower() == "y"),
             pages="1-5",
             subdomains=subdomains,
-            user_id=user_id
+            user_id=user_id,
+            username=ctx.author.name,
+            server_name=session['server_name']
         )
         
-        # Send result
-        if len(result) > 2000:
-            chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
-            for chunk in chunks:
-                await ctx.send(f"```\n{chunk}\n```")
+        # Send clickable links to user's DM if domains were created
+        if created_domains:
+            dm_result = await send_links_to_user_dm(
+                ctx.author, 
+                created_domains, 
+                session['server_name'],
+                server_ip
+            )
+            
+            # Notify about DM
+            await ctx.send(
+                f"✅ **Success!** Created {len(created_domains)} domain(s) with subdomains: `{subdomains}`\n"
+                f"📩 **Check your DMs** for clickable links!\n"
+                f"🔗 Use `!mylinks` to manage your domains"
+            )
         else:
-            await ctx.send(f"```\n{result}\n```")
+            # Send result if no domains were extracted
+            if len(result) > 2000:
+                chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
+                for chunk in chunks:
+                    await ctx.send(f"```\n{chunk}\n```")
+            else:
+                await ctx.send(f"```\n{result}\n```")
             
     except Exception as e:
         await ctx.send(f"Error: {str(e)}")
@@ -498,6 +554,150 @@ async def clear_session_command(ctx):
     else:
         await ctx.send("No active session to clear.")
 
+@bot.command(name='mylinks')
+async def mylinks_command(ctx):
+    """Show user's active domain links"""
+    user_id = ctx.author.id
+    username = ctx.author.name
+    
+    # Add user to database if not exists
+    db.add_user(user_id, username)
+    
+    # Get user links and stats
+    user_links = db.get_user_links(user_id, active_only=True)
+    user_stats = db.get_user_stats(user_id)
+    
+    if not user_links:
+        embed = discord.Embed(
+            title="📋 Your Domain Links",
+            description="You don't have any active domain links yet.\n\nUse `!start` to select a server and create some domains!",
+            color=0x0099ff
+        )
+        await ctx.send(embed=embed)
+        return
+    
+    # Create embed with user's links
+    embed = discord.Embed(
+        title="📋 Your Active Domain Links",
+        description=f"**{user_stats['active_links']}/3** active links • **{user_stats['remaining_slots']}** slots remaining",
+        color=0x00ff00,
+        timestamp=datetime.now()
+    )
+    
+    # Add links with clickable format
+    link_text = ""
+    for i, link in enumerate(user_links, 1):
+        domain = link['domain_name']
+        server = link['server_name']
+        created = link['created_at']
+        
+        # Format creation date
+        try:
+            date_obj = datetime.fromisoformat(created.replace('Z', '+00:00'))
+            formatted_date = date_obj.strftime('%m/%d/%Y')
+        except:
+            formatted_date = created[:10]
+        
+        clickable_url = f"http://{domain}" if not domain.startswith(('http://', 'https://')) else domain
+        link_text += f"{i}. [{domain}]({clickable_url}) • {server} • {formatted_date}\n"
+    
+    embed.add_field(
+        name="🔗 Your Domains",
+        value=link_text,
+        inline=False
+    )
+    
+    embed.add_field(
+        name="📊 Stats",
+        value=f"• Total created: {user_stats['total_links_created']}\n"
+              f"• Member since: {user_stats['first_seen'][:10]}",
+        inline=False
+    )
+    
+    embed.set_footer(text="Use !removelink <domain> to remove a link • Click domains to visit")
+    
+    await ctx.send(embed=embed)
+
+@bot.command(name='removelink')
+async def removelink_command(ctx, *, domain_name: str = None):
+    """Remove a specific domain link"""
+    user_id = ctx.author.id
+    
+    if not domain_name:
+        await ctx.send("❌ Please specify a domain to remove.\nUsage: `!removelink example.domain.com`")
+        return
+    
+    # Clean up domain name
+    domain_name = domain_name.strip().replace('http://', '').replace('https://', '')
+    
+    # Get user's links to verify ownership
+    user_links = db.get_user_links(user_id, active_only=True)
+    
+    # Check if user owns this domain
+    owned_domains = [link['domain_name'] for link in user_links]
+    
+    if domain_name not in owned_domains:
+        await ctx.send(f"❌ You don't own the domain `{domain_name}`\n\nUse `!mylinks` to see your active domains.")
+        return
+    
+    # Deactivate the link
+    db.deactivate_user_link(user_id, domain_name)
+    
+    # Get updated stats
+    user_stats = db.get_user_stats(user_id)
+    
+    embed = discord.Embed(
+        title="🗑️ Link Removed",
+        description=f"Successfully removed: **{domain_name}**",
+        color=0xff9900
+    )
+    
+    embed.add_field(
+        name="📊 Updated Stats",
+        value=f"• Active links: {user_stats['active_links']}/3\n"
+              f"• Available slots: {user_stats['remaining_slots']}",
+        inline=False
+    )
+    
+    await ctx.send(embed=embed)
+
+@bot.command(name='mystats')
+async def mystats_command(ctx):
+    """Show detailed user statistics"""
+    user_id = ctx.author.id
+    username = ctx.author.name
+    
+    # Add user to database if not exists
+    db.add_user(user_id, username)
+    
+    user_stats = db.get_user_stats(user_id)
+    
+    embed = discord.Embed(
+        title="📊 Your Domain92 Statistics",
+        description=f"Statistics for **{username}**",
+        color=0x0099ff,
+        timestamp=datetime.now()
+    )
+    
+    embed.add_field(
+        name="🔗 Link Usage",
+        value=f"• Active links: **{user_stats['active_links']}/3**\n"
+              f"• Available slots: **{user_stats['remaining_slots']}**\n"
+              f"• Total created: **{user_stats['total_links_created']}**",
+        inline=False
+    )
+    
+    embed.add_field(
+        name="📅 Account Info",
+        value=f"• Member since: {user_stats['first_seen'][:10]}\n"
+              f"• Last active: {user_stats['last_active'][:10]}",
+        inline=False
+    )
+    
+    embed.set_footer(text="Use !mylinks to manage your domains")
+    
+    await ctx.send(embed=embed)
+
 @bot.command(name='help_domain92')
 async def help_command(ctx):
     """Show help for domain92 bot commands"""
@@ -526,6 +726,14 @@ async def help_command(ctx):
     )
     
     embed.add_field(
+        name="Link Management Commands",
+        value="• `!mylinks` - View your active domains (3 link limit)\n"
+              "• `!removelink <domain>` - Remove a specific domain\n"
+              "• `!mystats` - View your detailed statistics",
+        inline=False
+    )
+    
+    embed.add_field(
         name="System Commands",
         value="• `!terminal <command>` - Execute safe terminal commands\n"
               "  Allowed: ls, pwd, whoami, date, uptime, df, free, ps",
@@ -544,9 +752,85 @@ async def help_command(ctx):
     
     await ctx.send(embed=embed)
 
-async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", subdomains: str = "random", user_id: int = None):
+def extract_domains_from_output(output: str) -> List[str]:
+    """Extract domain names from domain92 output"""
+    domains = []
+    
+    # Look for URLs in the output (http:// or https://)
+    url_pattern = r'https?://([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'
+    url_matches = re.findall(url_pattern, output)
+    domains.extend(url_matches)
+    
+    # Look for domain patterns (domain.tld format)
+    domain_pattern = r'\b([a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b'
+    domain_matches = re.findall(domain_pattern, output)
+    domains.extend(domain_matches)
+    
+    # Remove duplicates and clean up
+    unique_domains = list(set(domains))
+    return [domain.strip() for domain in unique_domains if domain.strip()]
+
+async def send_links_to_user_dm(user, domains: List[str], server_name: str, server_ip: str):
+    """Send clickable domain links to user's DM"""
+    try:
+        if not domains:
+            return
+        
+        # Create embed with clickable links
+        embed = discord.Embed(
+            title="🎉 Your Domain92 Links Are Ready!",
+            description=f"Created {len(domains)} domain(s) on **{server_name}** ({server_ip})",
+            color=0x00ff00,
+            timestamp=datetime.now()
+        )
+        
+        # Add clickable links
+        link_text = ""
+        for i, domain in enumerate(domains, 1):
+            # Ensure domain has protocol
+            if not domain.startswith(('http://', 'https://')):
+                clickable_url = f"http://{domain}"
+            else:
+                clickable_url = domain
+                
+            link_text += f"{i}. [{domain}]({clickable_url})\n"
+        
+        embed.add_field(
+            name="🔗 Clickable Links",
+            value=link_text,
+            inline=False
+        )
+        
+        embed.add_field(
+            name="ℹ️ Info",
+            value=f"• All domains point to: `{server_ip}`\n"
+                  f"• Type: A Records\n"
+                  f"• Status: Active",
+            inline=False
+        )
+        
+        embed.set_footer(text="Domain92 Discord Bot • Click links to visit your domains")
+        
+        await user.send(embed=embed)
+        
+    except discord.Forbidden:
+        return "❌ Cannot send DM - user has DMs disabled"
+    except Exception as e:
+        return f"❌ Error sending DM: {str(e)}"
+
+async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", subdomains: str = "random", user_id: int = None, username: str = None, server_name: str = None):
     """Run domain92 asynchronously using subprocess for maximum speed"""
     try:
+        # Check user limits before creating
+        can_create, remaining, current_count = db.can_user_create_links(user_id, number)
+        
+        if not can_create:
+            return f"❌ **Link Limit Exceeded!**\n\n" \
+                   f"• You have {current_count}/3 active links\n" \
+                   f"• You can create {remaining} more links\n" \
+                   f"• Requested: {number} links\n\n" \
+                   f"Use `!mylinks` to manage your existing links."
+        
         # Build command arguments for domain92 with all required parameters
         cmd = [
             "python3", "-m", "domain92",
@@ -581,21 +865,35 @@ async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: 
             output_lines.append(stdout.decode())
         if stderr:
             output_lines.append(f"Errors: {stderr.decode()}")
-            
-        # Read the output file if it exists
+        
+        # Read the output file and extract domains
+        created_domains = []
         if os.path.exists(outfile):
             with open(outfile, 'r') as f:
                 file_content = f.read()
             output_lines.append(f"\n🎯 Generated domains:\n{file_content}")
             
+            # Extract domains from file content
+            created_domains = extract_domains_from_output(file_content)
+            
             # Clean up the file
             os.remove(outfile)
         
+        # If no domains found in file, try to extract from stdout
+        if not created_domains and stdout:
+            created_domains = extract_domains_from_output(stdout.decode())
+        
+        # Save domains to database if any were created
+        if created_domains and user_id and username and server_name:
+            db.add_user_links(user_id, username, created_domains, server_name, ip)
+        
         result = "\n".join(output_lines) if output_lines else "✅ Domain92 completed successfully"
-        return result
+        
+        # Return both result and created domains
+        return result, created_domains
         
     except Exception as e:
-        return f"❌ Error running domain92: {str(e)}"
+        return f"❌ Error running domain92: {str(e)}", []
 
 # Load bot token from environment or config file
 def load_config():
