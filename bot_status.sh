@@ -29,8 +29,9 @@ echo "Status:    ./bot_status.sh"
 echo
 echo "=== Discord Bot Commands ==="
 echo "!start         - Select server dropdown (with custom emojis!)"
-echo "!domain92      - Interactive interface"  
+echo "!domain92      - Interactive interface (with subdomain options)"  
 echo "!domain92_auto 5 - Create 5 links quickly"
+echo "!domain92_subs 3 api,test,demo - Create with specific subdomains"
 echo "!terminal ls   - Safe terminal commands"
 echo "!help_domain92 - Full help"
 echo

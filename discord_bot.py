@@ -120,8 +120,9 @@ class ServerSelectView(discord.ui.View):
             )
             embed.add_field(
                 name="🚀 Available Commands",
-                value=f"• `!domain92` - Interactive domain92 interface\n"
+                value=f"• `!domain92` - Interactive interface (with subdomain options)\n"
                       f"• `!domain92_auto 5` - Create 5 links automatically\n"
+                      f"• `!domain92_subs 3 api,test,demo` - Create with specific subdomains\n"
                       f"• `!terminal ls` - Execute safe terminal commands\n"
                       f"• `!status` - Check your current session\n"
                       f"• `!clear_session` - Clear your current session",
@@ -216,6 +217,15 @@ class Domain92InputModal(discord.ui.Modal):
             default="1-5"
         )
         self.add_item(self.pages_input)
+        
+        self.subdomains_input = discord.ui.TextInput(
+            label="Subdomains (optional)",
+            placeholder="e.g., api,test,demo,www,mail (default: random)",
+            required=False,
+            max_length=100,
+            default="random"
+        )
+        self.add_item(self.subdomains_input)
     
     async def on_submit(self, interaction):
         await interaction.response.defer()
@@ -225,6 +235,7 @@ class Domain92InputModal(discord.ui.Modal):
             webhook = self.webhook_input.value or "none"
             auto = self.auto_captcha.value.lower() == "y"
             pages = self.pages_input.value or "1-5"
+            subdomains = self.subdomains_input.value or "random"
             
             # Execute domain92 with the provided parameters
             result = await run_domain92_async(
@@ -233,6 +244,7 @@ class Domain92InputModal(discord.ui.Modal):
                 webhook=webhook,
                 auto=auto,
                 pages=pages,
+                subdomains=subdomains,
                 user_id=self.user_id
             )
             
@@ -346,6 +358,49 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
             webhook=webhook,
             auto=(auto.lower() == "y"),
             pages="1-5",  # Default pages for auto command
+            subdomains="random",  # Default subdomains for auto command
+            user_id=user_id
+        )
+        
+        # Send result
+        if len(result) > 2000:
+            chunks = [result[i:i+1900] for i in range(0, len(result), 1900)]
+            for chunk in chunks:
+                await ctx.send(f"```\n{chunk}\n```")
+        else:
+            await ctx.send(f"```\n{result}\n```")
+            
+    except Exception as e:
+        await ctx.send(f"Error: {str(e)}")
+
+@bot.command(name='domain92_subs')
+async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str = "none", auto: str = "y"):
+    """Run domain92 with specific subdomains"""
+    user_id = ctx.author.id
+    
+    if user_id not in active_sessions:
+        await ctx.send("Please select a server first using `!start`")
+        return
+    
+    session = active_sessions[user_id]
+    server_ip = session['server_ip']
+    
+    # Validate subdomains format
+    if not subdomains or subdomains == "random":
+        subdomain_display = "random subdomains"
+    else:
+        subdomain_display = f"subdomains: {subdomains}"
+    
+    await ctx.send(f"🚀 Creating {number} domains with {subdomain_display} on {session['server_name']} ({server_ip})...")
+    
+    try:
+        result = await run_domain92_async(
+            ip=server_ip,
+            number=number,
+            webhook=webhook,
+            auto=(auto.lower() == "y"),
+            pages="1-5",
+            subdomains=subdomains,
             user_id=user_id
         )
         
@@ -464,7 +519,9 @@ async def help_command(ctx):
         name="Domain92 Commands", 
         value="• `!domain92` - Interactive domain92 interface\n"
               "• `!domain92_auto <number> [webhook] [auto]` - Run automatically\n"
-              "  Example: `!domain92_auto 5 none y`",
+              "  Example: `!domain92_auto 5 none y`\n"
+              "• `!domain92_subs <number> <subdomains> [webhook] [auto]` - Run with specific subdomains\n"
+              "  Example: `!domain92_subs 3 api,test,demo none y`",
         inline=False
     )
     
@@ -487,7 +544,7 @@ async def help_command(ctx):
     
     await ctx.send(embed=embed)
 
-async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", user_id: int = None):
+async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, pages: str = "1-5", subdomains: str = "random", user_id: int = None):
     """Run domain92 asynchronously using subprocess for maximum speed"""
     try:
         # Build command arguments for domain92 with all required parameters
@@ -498,7 +555,7 @@ async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: 
             "--webhook", webhook,
             "--silent",  # Reduce output for Discord
             "--pages", pages,  # Use provided pages parameter
-            "--subdomains", "random"  # Default subdomains to avoid prompt
+            "--subdomains", subdomains  # Use provided subdomains parameter
         ]
         
         if auto:

@@ -1,11 +1,7 @@
 nohup: ignoring input
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
-[2025-08-22 03:15:38] [INFO    ] discord.client: logging in using static token
+[2025-08-22 03:24:08] [INFO    ] discord.client: logging in using static token
 INFO:discord.client:logging in using static token
-[2025-08-22 03:15:38] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 4e17558002920358f1065c62df27f543).
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4e17558002920358f1065c62df27f543).
+[2025-08-22 03:24:09] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 75e3efe4311e8192df0374fb4c936482).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 75e3efe4311e8192df0374fb4c936482).
 INFO:__main__:Domain-Next#7897 has connected to Discord!
-[2025-08-22 03:18:06] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-ERROR:discord.ext.commands.bot:Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
