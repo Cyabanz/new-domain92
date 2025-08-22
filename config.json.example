@@ -1,0 +1,19 @@
+{
+    "bot_token": "YOUR_DISCORD_BOT_TOKEN_HERE",
+    "command_prefix": "!",
+    "allowed_users": [],
+    "log_level": "INFO",
+    "servers": {
+        "PeteZah": "62.72.3.251",
+        "Shadow": "104.243.38.18",
+        "Lunar": "199.180.255.67",
+        "Lunar Alt": "172.93.101.294"
+    },
+    "security": {
+        "allowed_terminal_commands": [
+            "ls", "pwd", "whoami", "date", "uptime", "df", "free", "ps"
+        ],
+        "max_concurrent_sessions": 10,
+        "session_timeout_minutes": 30
+    }
+}
