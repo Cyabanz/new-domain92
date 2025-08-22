@@ -30,7 +30,8 @@ SERVERS = {
     "Shadow": "104.243.38.18", 
     "Lunar": "172.93.101.294",
     "Vapor": "199.180.255.67",
-    "gn-math": "107.174.34.44"
+    "gn-math": "107.174.34.44",
+    "Frogiees Arcade": "152.53.81.196"
 }
 
 # Custom emojis for servers and UI
@@ -38,7 +39,8 @@ EMOJIS = {
     "shadow": "<:IMG_0342:1408216293865164810>",
     "gn_math": "<:IMG_0345:1408216292414062612>", 
     "vapor": "<:IMG_0346:1408216290752987197>",
-    "lunar": "<:IMG_0347:1408216520034881536>"
+    "lunar": "<:IMG_0347:1408216520034881536>",
+    "frogiees": "<:emoji_5:1408292931579678821>"
 }
 
 # Active user sessions to prevent conflicts
@@ -82,6 +84,12 @@ class ServerSelectView(discord.ui.View):
                 description="gn-math server (Kahoot)",
                 emoji=EMOJIS["gn_math"]
             ),
+            discord.SelectOption(
+                label="Frogiees Arcade", 
+                value="152.53.81.196",
+                description="Frogiees Arcade server",
+                emoji=EMOJIS["frogiees"]
+            ),
         ]
     )
     async def server_select(self, interaction: discord.Interaction, select: discord.ui.Select):
@@ -114,6 +122,8 @@ class ServerSelectView(discord.ui.View):
                 server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
             elif server_name == "gn-math":
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
+            elif server_name == "Frogiees Arcade":
+                server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
             
             embed = discord.Embed(
                 title=f"{server_emoji} Server Selected",
@@ -168,6 +178,8 @@ class Domain92CommandView(discord.ui.View):
                 server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
             elif server_name == "gn-math":
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
+            elif server_name == "Frogiees Arcade":
+                server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
                 
             embed = discord.Embed(
                 title=f"{server_emoji} Session Status",
@@ -315,7 +327,8 @@ async def start_command(ctx):
               f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
               f"{EMOJIS['lunar']} **Lunar** - 172.93.101.294\n"
               f"{EMOJIS['vapor']} **Vapor** - 199.180.255.67\n"
-              f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44",
+              f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44\n"
+              f"{EMOJIS['frogiees']} **Frogiees Arcade** - 152.53.81.196",
         inline=False
     )
     
@@ -347,6 +360,8 @@ async def domain92_command(ctx):
         server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
     elif server_name == "gn-math":
         server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
+    elif server_name == "Frogiees Arcade":
+        server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
     
     embed = discord.Embed(
         title=f"{server_emoji} Domain92 - {server_name}",
@@ -532,6 +547,8 @@ async def status_command(ctx):
             server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
         elif server_name == "gn-math":
             server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
+        elif server_name == "Frogiees Arcade":
+            server_emoji = EMOJIS["frogiees"]  # Frogiees emoji for arcade server
         
         embed = discord.Embed(
             title=f"{server_emoji} Session Status",
@@ -746,7 +763,8 @@ async def help_command(ctx):
               f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
               f"• {EMOJIS['lunar']} **Lunar**: 172.93.101.294\n"
               f"• {EMOJIS['vapor']} **Vapor**: 199.180.255.67\n"
-              f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44",
+              f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44\n"
+              f"• {EMOJIS['frogiees']} **Frogiees Arcade**: 152.53.81.196",
         inline=False
     )
     

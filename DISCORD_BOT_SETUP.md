@@ -61,6 +61,7 @@ The bot includes these predefined servers:
 - **Lunar**: 172.93.101.294 (lunar emoji)
 - **Vapor**: 199.180.255.67 (vapor emoji)
 - **gn-math**: 107.174.34.44 (kahoot emoji)
+- **Frogiees Arcade**: 152.53.81.196 (frogiees emoji)
 
 ## Multi-User Features
 

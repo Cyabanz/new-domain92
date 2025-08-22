@@ -11,6 +11,7 @@ A multi-user Discord bot version of domain92 that allows several users to use th
   - **Lunar**: 172.93.101.294 (lunar emoji)
   - **Vapor**: 199.180.255.67 (vapor emoji)
   - **gn-math**: 107.174.34.44 (kahoot emoji)
+  - **Frogiees Arcade**: 152.53.81.196 (frogiees emoji)
 - **Interactive Interface**: Easy-to-use Discord UI with buttons and modals
 - **Terminal Access**: Execute safe terminal commands with security restrictions
 - **Session Management**: Individual user sessions with automatic cleanup
