@@ -6,7 +6,7 @@ A multi-user Discord bot version of domain92 that allows several users to use th
 
 - **Multi-User Support**: Multiple users can use the bot simultaneously without conflicts
 - **Server Selection**: Dropdown menu to select from predefined servers:
-  - **PeteZah**: 62.72.3.251 (no emoji)
+  - **PeteZah**: 62.72.3.251 (petezah emoji)
   - **Shadow**: 104.243.38.18 (shadow emoji)
   - **Lunar**: 172.93.101.294 (lunar emoji)
   - **Vapor**: 199.180.255.67 (vapor emoji)

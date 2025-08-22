@@ -40,7 +40,7 @@ echo "!help_domain92 - Full help"
 echo
 echo "=== Custom Emojis Added ==="
 echo "🎯 Shadow server   - <:IMG_0342:1408216293865164810> (104.243.38.18)"
-echo "🎯 PeteZah server  - (no emoji) (62.72.3.251)"  
+echo "🎯 PeteZah server  - <:emoji_7:1408297382570889227> (62.72.3.251)"  
 echo "🎯 Lunar server    - <:IMG_0347:1408216520034881536> (172.93.101.294)"
 echo "🎯 Vapor server    - <:IMG_0346:1408216290752987197> (199.180.255.67)"
 echo "🎯 gn-math server  - <:IMG_0345:1408216292414062612> (107.174.34.44)"

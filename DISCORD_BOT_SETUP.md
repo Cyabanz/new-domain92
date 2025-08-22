@@ -56,7 +56,7 @@ python discord_bot.py
 ## Server Configuration
 
 The bot includes these predefined servers:
-- **PeteZah**: 62.72.3.251 (no emoji)
+- **PeteZah**: 62.72.3.251 (petezah emoji)
 - **Shadow**: 104.243.38.18 (shadow emoji)
 - **Lunar**: 172.93.101.294 (lunar emoji)
 - **Vapor**: 199.180.255.67 (vapor emoji)

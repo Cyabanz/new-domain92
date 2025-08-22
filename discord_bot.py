@@ -42,7 +42,8 @@ EMOJIS = {
     "vapor": "<:IMG_0346:1408216290752987197>",
     "lunar": "<:IMG_0347:1408216520034881536>",
     "frogiees": "<:emoji_5:1408292931579678821>",
-    "extrememath": "<:emoji_6:1408295630727806996>"
+    "extrememath": "<:emoji_6:1408295630727806996>",
+    "petezah": "<:emoji_7:1408297382570889227>"
 }
 
 # Active user sessions to prevent conflicts
@@ -59,8 +60,8 @@ class ServerSelectView(discord.ui.View):
             discord.SelectOption(
                 label="PeteZah", 
                 value="62.72.3.251",
-                description="PeteZah's server"
-                # No emoji for PeteZah
+                description="PeteZah's server",
+                emoji=EMOJIS["petezah"]
             ),
             discord.SelectOption(
                 label="Shadow", 
@@ -123,7 +124,7 @@ class ServerSelectView(discord.ui.View):
             if server_name == "Shadow":
                 server_emoji = EMOJIS["shadow"]
             elif server_name == "PeteZah":
-                server_emoji = ""  # No emoji for PeteZah
+                server_emoji = EMOJIS["petezah"]  # PeteZah emoji
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
             elif server_name == "Vapor":
@@ -181,7 +182,7 @@ class Domain92CommandView(discord.ui.View):
             if server_name == "Shadow":
                 server_emoji = EMOJIS["shadow"]
             elif server_name == "PeteZah":
-                server_emoji = ""  # No emoji for PeteZah
+                server_emoji = EMOJIS["petezah"]  # PeteZah emoji
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
             elif server_name == "Vapor":
@@ -335,7 +336,7 @@ async def start_command(ctx):
     )
     embed.add_field(
         name="🖥️ Available Servers",
-        value=f"**PeteZah** - 62.72.3.251\n"
+        value=f"{EMOJIS['petezah']} **PeteZah** - 62.72.3.251\n"
               f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
               f"{EMOJIS['lunar']} **Lunar** - 172.93.101.294\n"
               f"{EMOJIS['vapor']} **Vapor** - 199.180.255.67\n"
@@ -366,7 +367,7 @@ async def domain92_command(ctx):
     if server_name == "Shadow":
         server_emoji = EMOJIS["shadow"]
     elif server_name == "PeteZah":
-        server_emoji = ""  # No emoji for PeteZah
+        server_emoji = EMOJIS["petezah"]  # PeteZah emoji
     elif server_name == "Lunar":
         server_emoji = EMOJIS["lunar"]
     elif server_name == "Vapor":
@@ -555,7 +556,7 @@ async def status_command(ctx):
         if server_name == "Shadow":
             server_emoji = EMOJIS["shadow"]
         elif server_name == "PeteZah":
-            server_emoji = ""  # No emoji for PeteZah
+            server_emoji = EMOJIS["petezah"]  # PeteZah emoji
         elif server_name == "Lunar":
             server_emoji = EMOJIS["lunar"]
         elif server_name == "Vapor":
@@ -776,12 +777,13 @@ async def help_command(ctx):
     
     embed.add_field(
         name="🖥️ Available Servers",
-        value=f"• **PeteZah**: 62.72.3.251\n"
+        value=f"• {EMOJIS['petezah']} **PeteZah**: 62.72.3.251\n"
               f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
               f"• {EMOJIS['lunar']} **Lunar**: 172.93.101.294\n"
               f"• {EMOJIS['vapor']} **Vapor**: 199.180.255.67\n"
               f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44\n"
-              f"• {EMOJIS['frogiees']} **Frogiees Arcade**: 152.53.81.196",
+              f"• {EMOJIS['frogiees']} **Frogiees Arcade**: 152.53.81.196\n"
+              f"• {EMOJIS['extrememath']} **ExtremeMath**: 152.53.38.152",
         inline=False
     )
     
