@@ -1,22 +1,7 @@
 nohup: ignoring input
-No support for colour on this terminal. Try bash/cygwin.
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
-[2025-08-22 03:13:02] [INFO    ] discord.client: logging in using static token
+[2025-08-22 03:15:38] [INFO    ] discord.client: logging in using static token
 INFO:discord.client:logging in using static token
-[2025-08-22 03:13:03] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: c4293f9aaeb41a50612cc999e0011342).
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c4293f9aaeb41a50612cc999e0011342).
+[2025-08-22 03:15:38] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 4e17558002920358f1065c62df27f543).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4e17558002920358f1065c62df27f543).
 INFO:__main__:Domain-Next#7897 has connected to Discord!
-[2025-08-22 03:13:34] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-ERROR:discord.ext.commands.bot:Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-29. Retrying in 0.31 seconds.
-[2025-08-22 03:13:34] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-ERROR:discord.ext.commands.bot:Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-29. Retrying in 0.94 seconds.
-[2025-08-22 03:13:34] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
-ERROR:discord.ext.commands.bot:Ignoring exception in command None
-discord.ext.commands.errors.CommandNotFound: Command "domain92_auto5" is not found
