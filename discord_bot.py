@@ -69,39 +69,43 @@ class ServerSelectView(discord.ui.View):
             ),
         ]
     )
-    async def select_callback(self, interaction):
-        selected_ip = interaction.data['values'][0]
-        server_name = None
+    async def server_select(self, interaction: discord.Interaction, select: discord.ui.Select):
+        try:
+            selected_ip = select.values[0]
+            server_name = None
+            
+            # Find server name by IP - use the same method as test
+            for option in select.options:
+                if option.value == selected_ip:
+                    server_name = option.label
+                    break
         
-        # Find server name by IP
-        for name, ip in SERVERS.items():
-            if ip == selected_ip:
-                server_name = name
-                break
-        
-        # Store user session
-        active_sessions[self.user_id] = {
-            'server_name': server_name,
-            'server_ip': selected_ip,
-            'timestamp': datetime.now()
-        }
-        
-        embed = discord.Embed(
-            title="🎯 Server Selected",
-            description=f"Selected **{server_name}** ({selected_ip})",
-            color=0x00ff00
-        )
-        embed.add_field(
-            name="🚀 Available Commands",
-            value="• `!domain92` - Interactive domain92 interface\n"
-                  "• `!domain92_auto 5` - Create 5 links automatically\n"
-                  "• `!terminal ls` - Execute safe terminal commands\n"
-                  "• `!status` - Check your current session\n"
-                  "• `!clear_session` - Clear your current session",
-            inline=False
-        )
-        
-        await interaction.response.edit_message(embed=embed, view=None)
+            # Store user session
+            active_sessions[self.user_id] = {
+                'server_name': server_name,
+                'server_ip': selected_ip,
+                'timestamp': datetime.now()
+            }
+            
+            embed = discord.Embed(
+                title="🎯 Server Selected",
+                description=f"Selected **{server_name}** ({selected_ip})",
+                color=0x00ff00
+            )
+            embed.add_field(
+                name="🚀 Available Commands",
+                value="• `!domain92` - Interactive domain92 interface\n"
+                      "• `!domain92_auto 5` - Create 5 links automatically\n"
+                      "• `!terminal ls` - Execute safe terminal commands\n"
+                      "• `!status` - Check your current session\n"
+                      "• `!clear_session` - Clear your current session",
+                inline=False
+            )
+            
+            await interaction.response.edit_message(embed=embed, view=None)
+            
+        except Exception as e:
+            await interaction.response.send_message(f"❌ Dropdown error: {str(e)}", ephemeral=True)
 
 class Domain92CommandView(discord.ui.View):
     def __init__(self, user_id: int, server_ip: str):
@@ -110,19 +114,16 @@ class Domain92CommandView(discord.ui.View):
         self.server_ip = server_ip
     
     @discord.ui.button(label="Create Links", style=discord.ButtonStyle.primary)
-    async def create_links(self, button, interaction):
-        await interaction.response.defer()
-        
+    async def create_links(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             # Create a modal for input
             modal = Domain92InputModal(self.user_id, self.server_ip, "create_links")
-            await interaction.followup.send("Please fill in the details:", view=None)
-            await interaction.user.send("Opening input form...", view=modal)
+            await interaction.response.send_modal(modal)
         except Exception as e:
-            await interaction.followup.send(f"Error: {str(e)}")
+            await interaction.response.send_message(f"Error: {str(e)}", ephemeral=True)
     
     @discord.ui.button(label="Check Status", style=discord.ButtonStyle.secondary)
-    async def check_status(self, button, interaction):
+    async def check_status(self, interaction: discord.Interaction, button: discord.ui.Button):
         session = active_sessions.get(self.user_id)
         if session:
             embed = discord.Embed(
