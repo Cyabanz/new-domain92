@@ -10,14 +10,8 @@ from datetime import datetime
 import sys
 import importlib.util
 
-# Import domain92 functionality - now using the properly installed package
-import domain92.__main__ as domain92_module
-
-# Access the functions we need
-checkprint = domain92_module.checkprint
-finddomains = domain92_module.finddomains  
-createlinks = domain92_module.createlinks
-client = domain92_module.client
+# Import domain92 functionality - using subprocess approach to avoid import conflicts
+# We'll use subprocess calls instead of direct imports to avoid execution conflicts
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -260,6 +254,17 @@ class Domain92InputModal(discord.ui.Modal):
 async def on_ready():
     logger.info(f'{bot.user} has connected to Discord!')
     print(f'{bot.user} has connected to Discord!')
+    print(f'Bot commands: {[cmd.name for cmd in bot.commands]}')
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    
+    print(f'Received message: "{message.content}" from {message.author}')
+    
+    # Process commands
+    await bot.process_commands(message)
 
 @bot.command(name='start')
 async def start_command(ctx):
