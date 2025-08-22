@@ -10,36 +10,14 @@ from datetime import datetime
 import sys
 import importlib.util
 
-# Import domain92 functionality
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Import domain92 functionality - now using the properly installed package
+import domain92.__main__ as domain92_module
 
-# Import specific functions we need from domain92
-import importlib.util
-spec = importlib.util.spec_from_file_location("domain92_main", "domain92/__main__.py")
-domain92_main = importlib.util.module_from_spec(spec)
-
-# Mock the version function to avoid import errors
-def mock_version(package):
-    return "1.2.0"
-
-# Temporarily replace the version function
-import importlib.metadata
-original_version = importlib.metadata.version
-importlib.metadata.version = mock_version
-
-try:
-    spec.loader.exec_module(domain92_main)
-finally:
-    # Restore original version function
-    importlib.metadata.version = original_version
-
-# Import the functions we need
-checkprint = domain92_main.checkprint
-finddomains = domain92_main.finddomains
-createlinks = domain92_main.createlinks
-client = domain92_main.client
-domainlist = domain92_main.domainlist
-domainnames = domain92_main.domainnames
+# Access the functions we need
+checkprint = domain92_module.checkprint
+finddomains = domain92_module.finddomains  
+createlinks = domain92_module.createlinks
+client = domain92_module.client
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -91,8 +69,8 @@ class ServerSelectView(discord.ui.View):
             ),
         ]
     )
-    async def select_callback(self, interaction, select):
-        selected_ip = select.values[0]
+    async def select_callback(self, interaction):
+        selected_ip = interaction.data['values'][0]
         server_name = None
         
         # Find server name by IP
@@ -109,15 +87,15 @@ class ServerSelectView(discord.ui.View):
         }
         
         embed = discord.Embed(
-            title="Server Selected",
+            title="🎯 Server Selected",
             description=f"Selected **{server_name}** ({selected_ip})",
             color=0x00ff00
         )
         embed.add_field(
-            name="Available Commands",
-            value="• `!domain92` - Run domain92 with interactive prompts\n"
-                  "• `!domain92_auto <number> [options]` - Run domain92 automatically\n"
-                  "• `!terminal <command>` - Execute terminal command\n"
+            name="🚀 Available Commands",
+            value="• `!domain92` - Interactive domain92 interface\n"
+                  "• `!domain92_auto 5` - Create 5 links automatically\n"
+                  "• `!terminal ls` - Execute safe terminal commands\n"
                   "• `!status` - Check your current session\n"
                   "• `!clear_session` - Clear your current session",
             inline=False
@@ -409,66 +387,55 @@ async def help_command(ctx):
     await ctx.send(embed=embed)
 
 async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: bool = True, user_id: int = None):
-    """Run domain92 asynchronously and return the output"""
+    """Run domain92 asynchronously using subprocess for maximum speed"""
     try:
-        # Create a temporary args object similar to the CLI
-        import argparse
-        temp_args = argparse.Namespace(
-            ip=ip,
-            number=number,
-            webhook=webhook,
-            auto=auto,
-            silent=True,  # Reduce output for Discord
-            proxy="none",
-            use_tor=False,
-            outfile=f"domainlist_{user_id}_{datetime.now().timestamp()}.txt",
-            type="A",
-            pages="1-10",
-            subdomains="random",
-            single_tld=None
+        # Build command arguments for domain92
+        cmd = [
+            "python3", "-m", "domain92",
+            "--ip", ip,
+            "--number", str(number),
+            "--webhook", webhook,
+            "--silent"  # Reduce output for Discord
+        ]
+        
+        if auto:
+            cmd.append("--auto")
+            
+        # Add output file
+        outfile = f"domainlist_{user_id}_{int(datetime.now().timestamp())}.txt"
+        cmd.extend(["--outfile", outfile])
+        
+        # Run domain92 as subprocess for speed and isolation
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd="/workspace"
         )
         
-        # Temporarily replace global args
-        global args
-        original_args = args
-        args = temp_args
+        stdout, stderr = await process.communicate()
         
-        # Capture output
+        # Collect output
         output_lines = []
-        
-        def capture_print(text):
-            output_lines.append(str(text))
-        
-        # Replace checkprint temporarily
-        global checkprint
-        original_checkprint = checkprint
-        checkprint = capture_print
-        
-        try:
-            # Run the main domain creation logic
-            finddomains(temp_args.pages)
-            createlinks(temp_args.number)
+        if stdout:
+            output_lines.append(stdout.decode())
+        if stderr:
+            output_lines.append(f"Errors: {stderr.decode()}")
             
-            # Read the output file if it exists
-            if os.path.exists(temp_args.outfile):
-                with open(temp_args.outfile, 'r') as f:
-                    file_content = f.read()
-                output_lines.append(f"\nGenerated domains:\n{file_content}")
-                
-                # Clean up the file
-                os.remove(temp_args.outfile)
+        # Read the output file if it exists
+        if os.path.exists(outfile):
+            with open(outfile, 'r') as f:
+                file_content = f.read()
+            output_lines.append(f"\n🎯 Generated domains:\n{file_content}")
             
-            result = "\n".join(output_lines) if output_lines else "Domain92 completed successfully"
-            
-        finally:
-            # Restore original functions
-            args = original_args
-            checkprint = original_checkprint
+            # Clean up the file
+            os.remove(outfile)
         
+        result = "\n".join(output_lines) if output_lines else "✅ Domain92 completed successfully"
         return result
         
     except Exception as e:
-        return f"Error running domain92: {str(e)}"
+        return f"❌ Error running domain92: {str(e)}"
 
 # Load bot token from environment or config file
 def load_config():

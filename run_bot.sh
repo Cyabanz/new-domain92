@@ -40,6 +40,9 @@ else
     echo "Using bot token from environment variable."
 fi
 
+# Add domain92 to PATH
+export PATH="/home/ubuntu/.local/bin:$PATH"
+
 # Start the bot
 echo "Starting Discord bot..."
-python discord_bot.py
+python3 discord_bot.py

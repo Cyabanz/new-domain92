@@ -22,7 +22,14 @@ fi
 
 echo
 echo "=== Commands to manage the bot ==="
-echo "Start bot: nohup python3 discord_bot.py > bot.log 2>&1 &"
+echo "Start bot: export PATH=\"/home/ubuntu/.local/bin:\$PATH\" && nohup python3 discord_bot.py > bot.log 2>&1 &"
 echo "Stop bot:  pkill -f discord_bot.py"
 echo "View logs: tail -f bot.log"
 echo "Status:    ./bot_status.sh"
+echo
+echo "=== Discord Bot Commands ==="
+echo "!start         - Select server dropdown"
+echo "!domain92      - Interactive interface"  
+echo "!domain92_auto 5 - Create 5 links quickly"
+echo "!terminal ls   - Safe terminal commands"
+echo "!help_domain92 - Full help"
