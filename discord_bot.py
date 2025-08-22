@@ -28,12 +28,20 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# Server configurations with IP addresses
+# Server configurations with IP addresses and custom emojis
 SERVERS = {
     "PeteZah": "62.72.3.251",
     "Shadow": "104.243.38.18", 
     "Lunar": "199.180.255.67",
     "Lunar Alt": "172.93.101.294"
+}
+
+# Custom emojis for servers and UI
+EMOJIS = {
+    "shadow": "<:IMG_0342:1408216293865164810>",
+    "gn_math": "<:IMG_0345:1408216292414062612>", 
+    "vapor": "<:IMG_0346:1408216290752987197>",
+    "lunar": "<:IMG_0347:1408216520034881536>"
 }
 
 # Active user sessions to prevent conflicts
@@ -45,27 +53,31 @@ class ServerSelectView(discord.ui.View):
         self.user_id = user_id
     
     @discord.ui.select(
-        placeholder="Select your server",
+        placeholder="🎯 Select your server",
         options=[
             discord.SelectOption(
                 label="PeteZah", 
                 value="62.72.3.251",
-                description="PeteZah's server"
+                description="PeteZah's server",
+                emoji=EMOJIS["gn_math"]
             ),
             discord.SelectOption(
                 label="Shadow", 
                 value="104.243.38.18",
-                description="Shadow's server"
+                description="Shadow's server",
+                emoji=EMOJIS["shadow"]
             ),
             discord.SelectOption(
                 label="Lunar", 
                 value="199.180.255.67",
-                description="Lunar's server"
+                description="Lunar's server",
+                emoji=EMOJIS["lunar"]
             ),
             discord.SelectOption(
                 label="Lunar Alt", 
                 value="172.93.101.294",
-                description="Lunar's alternative server"
+                description="Lunar's alternative server",
+                emoji=EMOJIS["vapor"]
             ),
         ]
     )
@@ -87,18 +99,29 @@ class ServerSelectView(discord.ui.View):
                 'timestamp': datetime.now()
             }
             
+            # Get the appropriate emoji for the server
+            server_emoji = ""
+            if server_name == "Shadow":
+                server_emoji = EMOJIS["shadow"]
+            elif server_name == "PeteZah":
+                server_emoji = EMOJIS["gn_math"]
+            elif server_name == "Lunar":
+                server_emoji = EMOJIS["lunar"]
+            elif server_name == "Lunar Alt":
+                server_emoji = EMOJIS["vapor"]
+            
             embed = discord.Embed(
-                title="🎯 Server Selected",
+                title=f"{server_emoji} Server Selected",
                 description=f"Selected **{server_name}** ({selected_ip})",
                 color=0x00ff00
             )
             embed.add_field(
                 name="🚀 Available Commands",
-                value="• `!domain92` - Interactive domain92 interface\n"
-                      "• `!domain92_auto 5` - Create 5 links automatically\n"
-                      "• `!terminal ls` - Execute safe terminal commands\n"
-                      "• `!status` - Check your current session\n"
-                      "• `!clear_session` - Clear your current session",
+                value=f"• `!domain92` - Interactive domain92 interface\n"
+                      f"• `!domain92_auto 5` - Create 5 links automatically\n"
+                      f"• `!terminal ls` - Execute safe terminal commands\n"
+                      f"• `!status` - Check your current session\n"
+                      f"• `!clear_session` - Clear your current session",
                 inline=False
             )
             
@@ -126,9 +149,21 @@ class Domain92CommandView(discord.ui.View):
     async def check_status(self, interaction: discord.Interaction, button: discord.ui.Button):
         session = active_sessions.get(self.user_id)
         if session:
+            # Get server emoji
+            server_name = session['server_name']
+            server_emoji = ""
+            if server_name == "Shadow":
+                server_emoji = EMOJIS["shadow"]
+            elif server_name == "PeteZah":
+                server_emoji = EMOJIS["gn_math"]
+            elif server_name == "Lunar":
+                server_emoji = EMOJIS["lunar"]
+            elif server_name == "Lunar Alt":
+                server_emoji = EMOJIS["vapor"]
+                
             embed = discord.Embed(
-                title="Session Status",
-                description=f"Server: {session['server_name']} ({session['server_ip']})\n"
+                title=f"{server_emoji} Session Status",
+                description=f"Server: {server_name} ({session['server_ip']})\n"
                            f"Started: {session['timestamp'].strftime('%Y-%m-%d %H:%M:%S')}",
                 color=0x0099ff
             )
@@ -221,10 +256,18 @@ async def start_command(ctx):
     user_id = ctx.author.id
     
     embed = discord.Embed(
-        title="Welcome to Domain92 Discord Bot",
+        title="🎮 Welcome to Domain92 Discord Bot",
         description="This bot allows you to run domain92 commands on different servers.\n"
                    "Please select your server to get started:",
         color=0x0099ff
+    )
+    embed.add_field(
+        name="🖥️ Available Servers",
+        value=f"{EMOJIS['gn_math']} **PeteZah** - 62.72.3.251\n"
+              f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
+              f"{EMOJIS['lunar']} **Lunar** - 199.180.255.67\n"
+              f"{EMOJIS['vapor']} **Lunar Alt** - 172.93.101.294",
+        inline=False
     )
     
     view = ServerSelectView(user_id)
@@ -243,9 +286,20 @@ async def domain92_command(ctx):
     server_ip = session['server_ip']
     server_name = session['server_name']
     
+    # Get server emoji
+    server_emoji = ""
+    if server_name == "Shadow":
+        server_emoji = EMOJIS["shadow"]
+    elif server_name == "PeteZah":
+        server_emoji = EMOJIS["gn_math"]
+    elif server_name == "Lunar":
+        server_emoji = EMOJIS["lunar"]
+    elif server_name == "Lunar Alt":
+        server_emoji = EMOJIS["vapor"]
+    
     embed = discord.Embed(
-        title=f"Domain92 - {server_name}",
-        description=f"Running on server: {server_name} ({server_ip})",
+        title=f"{server_emoji} Domain92 - {server_name}",
+        description=f"Running on server: **{server_name}** ({server_ip})",
         color=0x00ff00
     )
     
@@ -335,9 +389,21 @@ async def status_command(ctx):
     session = active_sessions.get(user_id)
     
     if session:
+        # Get server emoji
+        server_name = session['server_name']
+        server_emoji = ""
+        if server_name == "Shadow":
+            server_emoji = EMOJIS["shadow"]
+        elif server_name == "PeteZah":
+            server_emoji = EMOJIS["gn_math"]
+        elif server_name == "Lunar":
+            server_emoji = EMOJIS["lunar"]
+        elif server_name == "Lunar Alt":
+            server_emoji = EMOJIS["vapor"]
+        
         embed = discord.Embed(
-            title="Session Status",
-            description=f"**Server:** {session['server_name']} ({session['server_ip']})\n"
+            title=f"{server_emoji} Session Status",
+            description=f"**Server:** {server_name} ({session['server_ip']})\n"
                        f"**Started:** {session['timestamp'].strftime('%Y-%m-%d %H:%M:%S')}",
             color=0x0099ff
         )
@@ -389,11 +455,11 @@ async def help_command(ctx):
     )
     
     embed.add_field(
-        name="Available Servers",
-        value="• **PeteZah**: 62.72.3.251\n"
-              "• **Shadow**: 104.243.38.18\n" 
-              "• **Lunar**: 199.180.255.67\n"
-              "• **Lunar Alt**: 172.93.101.294",
+        name="🖥️ Available Servers",
+        value=f"• {EMOJIS['gn_math']} **PeteZah**: 62.72.3.251\n"
+              f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
+              f"• {EMOJIS['lunar']} **Lunar**: 199.180.255.67\n"
+              f"• {EMOJIS['vapor']} **Lunar Alt**: 172.93.101.294",
         inline=False
     )
     
