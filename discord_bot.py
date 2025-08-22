@@ -33,7 +33,7 @@ SERVERS = {
     "PeteZah": "62.72.3.251",
     "Shadow": "104.243.38.18", 
     "Lunar": "199.180.255.67",
-    "Lunar Alt": "172.93.101.294",
+    "Vapor": "172.93.101.294",
     "gn-math": "107.174.34.44"
 }
 
@@ -75,9 +75,9 @@ class ServerSelectView(discord.ui.View):
                 emoji=EMOJIS["lunar"]
             ),
             discord.SelectOption(
-                label="Lunar Alt", 
+                label="Vapor", 
                 value="172.93.101.294",
-                description="Lunar Alt server (Vapor)",
+                description="Vapor server",
                 emoji=EMOJIS["vapor"]
             ),
             discord.SelectOption(
@@ -114,8 +114,8 @@ class ServerSelectView(discord.ui.View):
                 server_emoji = ""  # No emoji for PeteZah
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
-            elif server_name == "Lunar Alt":
-                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+            elif server_name == "Vapor":
+                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
             elif server_name == "gn-math":
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
             
@@ -167,8 +167,8 @@ class Domain92CommandView(discord.ui.View):
                 server_emoji = ""  # No emoji for PeteZah
             elif server_name == "Lunar":
                 server_emoji = EMOJIS["lunar"]
-            elif server_name == "Lunar Alt":
-                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+            elif server_name == "Vapor":
+                server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
             elif server_name == "gn-math":
                 server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
                 
@@ -277,7 +277,7 @@ async def start_command(ctx):
         value=f"**PeteZah** - 62.72.3.251\n"
               f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
               f"{EMOJIS['lunar']} **Lunar** - 199.180.255.67\n"
-              f"{EMOJIS['vapor']} **Lunar Alt** - 172.93.101.294\n"
+              f"{EMOJIS['vapor']} **Vapor** - 172.93.101.294\n"
               f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44",
         inline=False
     )
@@ -306,8 +306,8 @@ async def domain92_command(ctx):
         server_emoji = ""  # No emoji for PeteZah
     elif server_name == "Lunar":
         server_emoji = EMOJIS["lunar"]
-    elif server_name == "Lunar Alt":
-        server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+    elif server_name == "Vapor":
+        server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
     elif server_name == "gn-math":
         server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
     
@@ -412,8 +412,8 @@ async def status_command(ctx):
             server_emoji = ""  # No emoji for PeteZah
         elif server_name == "Lunar":
             server_emoji = EMOJIS["lunar"]
-        elif server_name == "Lunar Alt":
-            server_emoji = EMOJIS["vapor"]  # Vapor emoji for Lunar Alt
+        elif server_name == "Vapor":
+            server_emoji = EMOJIS["vapor"]  # Vapor emoji for Vapor server
         elif server_name == "gn-math":
             server_emoji = EMOJIS["gn_math"]  # gn-math emoji for kahoot server
         
@@ -475,7 +475,7 @@ async def help_command(ctx):
         value=f"• **PeteZah**: 62.72.3.251\n"
               f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
               f"• {EMOJIS['lunar']} **Lunar**: 199.180.255.67\n"
-              f"• {EMOJIS['vapor']} **Lunar Alt**: 172.93.101.294\n"
+              f"• {EMOJIS['vapor']} **Vapor**: 172.93.101.294\n"
               f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44",
         inline=False
     )
