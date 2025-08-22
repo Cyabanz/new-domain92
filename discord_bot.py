@@ -847,7 +847,7 @@ async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: 
                    f"• You have {current_count}/3 active links\n" \
                    f"• You can create {remaining} more links\n" \
                    f"• Requested: {number} links\n\n" \
-                   f"Use `!mylinks` to manage your existing links."
+                   f"Use `!mylinks` to manage your existing links.", []
         
         # Build command arguments for domain92 with all required parameters
         cmd = [
