@@ -1,0 +1,8 @@
+nohup: ignoring input
+No support for colour on this terminal. Try bash/cygwin.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+[2025-08-22 02:49:58] [INFO    ] discord.client: logging in using static token
+INFO:discord.client:logging in using static token
+[2025-08-22 02:49:58] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 194920c0da6f05f49ba73cf4624c59a2).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 194920c0da6f05f49ba73cf4624c59a2).
+INFO:__main__:Domain-Next#7897 has connected to Discord!

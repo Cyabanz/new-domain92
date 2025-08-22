@@ -12,7 +12,34 @@ import importlib.util
 
 # Import domain92 functionality
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from domain92.__main__ import *
+
+# Import specific functions we need from domain92
+import importlib.util
+spec = importlib.util.spec_from_file_location("domain92_main", "domain92/__main__.py")
+domain92_main = importlib.util.module_from_spec(spec)
+
+# Mock the version function to avoid import errors
+def mock_version(package):
+    return "1.2.0"
+
+# Temporarily replace the version function
+import importlib.metadata
+original_version = importlib.metadata.version
+importlib.metadata.version = mock_version
+
+try:
+    spec.loader.exec_module(domain92_main)
+finally:
+    # Restore original version function
+    importlib.metadata.version = original_version
+
+# Import the functions we need
+checkprint = domain92_main.checkprint
+finddomains = domain92_main.finddomains
+createlinks = domain92_main.createlinks
+client = domain92_main.client
+domainlist = domain92_main.domainlist
+domainnames = domain92_main.domainnames
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +91,7 @@ class ServerSelectView(discord.ui.View):
             ),
         ]
     )
-    async def select_callback(self, select, interaction):
+    async def select_callback(self, interaction, select):
         selected_ip = select.values[0]
         server_name = None
         
