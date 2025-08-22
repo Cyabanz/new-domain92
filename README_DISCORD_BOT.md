@@ -8,8 +8,8 @@ A multi-user Discord bot version of domain92 that allows several users to use th
 - **Server Selection**: Dropdown menu to select from predefined servers:
   - **PeteZah**: 62.72.3.251 (no emoji)
   - **Shadow**: 104.243.38.18 (shadow emoji)
-  - **Lunar**: 199.180.255.67 (lunar emoji)
-  - **Vapor**: 172.93.101.294 (vapor emoji)
+  - **Lunar**: 172.93.101.294 (lunar emoji)
+  - **Vapor**: 199.180.255.67 (vapor emoji)
   - **gn-math**: 107.174.34.44 (kahoot emoji)
 - **Interactive Interface**: Easy-to-use Discord UI with buttons and modals
 - **Terminal Access**: Execute safe terminal commands with security restrictions

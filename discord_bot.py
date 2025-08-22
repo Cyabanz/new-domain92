@@ -26,8 +26,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 SERVERS = {
     "PeteZah": "62.72.3.251",
     "Shadow": "104.243.38.18", 
-    "Lunar": "199.180.255.67",
-    "Vapor": "172.93.101.294",
+    "Lunar": "172.93.101.294",
+    "Vapor": "199.180.255.67",
     "gn-math": "107.174.34.44"
 }
 
@@ -64,13 +64,13 @@ class ServerSelectView(discord.ui.View):
             ),
             discord.SelectOption(
                 label="Lunar", 
-                value="199.180.255.67",
+                value="172.93.101.294",
                 description="Lunar's server",
                 emoji=EMOJIS["lunar"]
             ),
             discord.SelectOption(
                 label="Vapor", 
-                value="172.93.101.294",
+                value="199.180.255.67",
                 description="Vapor server",
                 emoji=EMOJIS["vapor"]
             ),
@@ -293,8 +293,8 @@ async def start_command(ctx):
         name="🖥️ Available Servers",
         value=f"**PeteZah** - 62.72.3.251\n"
               f"{EMOJIS['shadow']} **Shadow** - 104.243.38.18\n"
-              f"{EMOJIS['lunar']} **Lunar** - 199.180.255.67\n"
-              f"{EMOJIS['vapor']} **Vapor** - 172.93.101.294\n"
+              f"{EMOJIS['lunar']} **Lunar** - 172.93.101.294\n"
+              f"{EMOJIS['vapor']} **Vapor** - 199.180.255.67\n"
               f"{EMOJIS['gn_math']} **gn-math** - 107.174.34.44",
         inline=False
     )
@@ -536,8 +536,8 @@ async def help_command(ctx):
         name="🖥️ Available Servers",
         value=f"• **PeteZah**: 62.72.3.251\n"
               f"• {EMOJIS['shadow']} **Shadow**: 104.243.38.18\n" 
-              f"• {EMOJIS['lunar']} **Lunar**: 199.180.255.67\n"
-              f"• {EMOJIS['vapor']} **Vapor**: 172.93.101.294\n"
+              f"• {EMOJIS['lunar']} **Lunar**: 172.93.101.294\n"
+              f"• {EMOJIS['vapor']} **Vapor**: 199.180.255.67\n"
               f"• {EMOJIS['gn_math']} **gn-math**: 107.174.34.44",
         inline=False
     )
