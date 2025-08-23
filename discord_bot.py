@@ -918,13 +918,19 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
             id_pattern = r"'(\d+)'"
             domain_ids = re.findall(id_pattern, raw_output)
         
-        # Add domain IDs if found
+        # Add domain IDs if found (limit to prevent Discord embed size errors)
         if domain_ids:
+            # Limit to first 50 IDs to stay under Discord's 1024 character limit
+            limited_ids = domain_ids[:50]
             # Split into chunks of 10 for better formatting
-            id_chunks = [domain_ids[i:i+10] for i in range(0, len(domain_ids), 10)]
+            id_chunks = [limited_ids[i:i+10] for i in range(0, len(limited_ids), 10)]
             id_text = ""
             for chunk in id_chunks:
                 id_text += ", ".join(chunk) + "\n"
+            
+            # Add note if there are more IDs
+            if len(domain_ids) > 50:
+                id_text += f"\n... and {len(domain_ids) - 50} more IDs"
             
             embed.add_field(
                 name="🎯 Generated Domain IDs",
@@ -932,9 +938,11 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
                 inline=False
             )
         
-        # Add clickable links
+        # Add clickable links (limit to prevent Discord embed size errors)
         link_text = ""
-        for i, domain in enumerate(domains, 1):
+        limited_domains = domains[:10]  # Limit to 10 links to stay under character limit
+        
+        for i, domain in enumerate(limited_domains, 1):
             # Ensure domain has protocol
             if not domain.startswith(('http://', 'https://')):
                 clickable_url = f"http://{domain}"
@@ -942,6 +950,10 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
                 clickable_url = domain
                 
             link_text += f"{i}. [{domain}]({clickable_url})\n"
+        
+        # Add note if there are more domains
+        if len(domains) > 10:
+            link_text += f"\n... and {len(domains) - 10} more domains"
         
         embed.add_field(
             name="🔗 Clickable Links",

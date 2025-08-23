@@ -54,5 +54,6 @@ echo "📩 DM Links: Loading emoji <:1320138023291060386:1403395950625427519>"
 echo
 echo "=== NEW FEATURE ==="
 echo "🎯 Domain IDs: Now included in DM embeds (like: 308151, 308162, etc.)"
-echo "🔗 Clickable Links: Still included as before"
+echo "🔗 Clickable Links: Still included as before (up to 10 shown)"
 echo "📩 Complete Output: Both domain IDs and formatted links in DMs"
+echo "⚡ Fixed: Discord embed size limits (50 IDs max, 10 links max)"
