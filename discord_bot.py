@@ -292,12 +292,26 @@ class Domain92InputModal(discord.ui.Modal):
                     raw_output
                 )
                 
-                # Notify about DM
-                await interaction.followup.send(
-                    f"✅ **Success!** Created {len(created_domains)} domain(s)\n"
-                    f"📩 **Check your DMs** for clickable links!\n"
-                    f"🔗 Use `!mylinks` to manage your domains"
+                # Notify about DM with embed
+                success_embed = discord.Embed(
+                    title="✅ Domains Created Successfully!",
+                    description=f"**{len(created_domains)} domain(s)** created on **{active_sessions[self.user_id]['server_name']}**",
+                    color=0x00ff00,
+                    timestamp=datetime.now()
                 )
+                success_embed.add_field(
+                    name="📩 Check Your DMs",
+                    value="Your clickable domain links with IDs have been sent to your DMs!",
+                    inline=False
+                )
+                success_embed.add_field(
+                    name="🔗 Manage Your Domains",
+                    value="Use `!mylinks` to view and manage your active domains",
+                    inline=False
+                )
+                success_embed.set_footer(text="Domain92 Discord Bot")
+                
+                await interaction.followup.send(embed=success_embed)
             else:
                 # Send result back to user if no domains were extracted
                 if len(result) > 2000:
@@ -468,12 +482,26 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
                 raw_output
             )
             
-            # Notify about DM
-            await ctx.send(
-                f"✅ **Success!** Created {len(created_domains)} domain(s)\n"
-                f"📩 **Check your DMs** for clickable links!\n"
-                f"🔗 Use `!mylinks` to manage your domains"
+            # Notify about DM with embed
+            success_embed = discord.Embed(
+                title="✅ Domains Created Successfully!",
+                description=f"**{len(created_domains)} domain(s)** created on **{session['server_name']}**",
+                color=0x00ff00,
+                timestamp=datetime.now()
             )
+            success_embed.add_field(
+                name="📩 Check Your DMs",
+                value="Your clickable domain links with IDs have been sent to your DMs!",
+                inline=False
+            )
+            success_embed.add_field(
+                name="🔗 Manage Your Domains",
+                value="Use `!mylinks` to view and manage your active domains",
+                inline=False
+            )
+            success_embed.set_footer(text="Domain92 Discord Bot")
+            
+            await ctx.send(embed=success_embed)
         else:
             # Send result if no domains were extracted
             if len(result) > 2000:
@@ -533,12 +561,26 @@ async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str 
                 raw_output
             )
             
-            # Notify about DM
-            await ctx.send(
-                f"✅ **Success!** Created {len(created_domains)} domain(s) with subdomains: `{subdomains}`\n"
-                f"📩 **Check your DMs** for clickable links!\n"
-                f"🔗 Use `!mylinks` to manage your domains"
+            # Notify about DM with embed
+            success_embed = discord.Embed(
+                title="✅ Domains Created Successfully!",
+                description=f"**{len(created_domains)} domain(s)** created on **{session['server_name']}** with subdomains: `{subdomains}`",
+                color=0x00ff00,
+                timestamp=datetime.now()
             )
+            success_embed.add_field(
+                name="📩 Check Your DMs",
+                value="Your clickable domain links with IDs have been sent to your DMs!",
+                inline=False
+            )
+            success_embed.add_field(
+                name="🔗 Manage Your Domains",
+                value="Use `!mylinks` to view and manage your active domains",
+                inline=False
+            )
+            success_embed.set_footer(text="Domain92 Discord Bot")
+            
+            await ctx.send(embed=success_embed)
         else:
             # Send result if no domains were extracted
             if len(result) > 2000:
@@ -689,9 +731,11 @@ async def mylinks_command(ctx):
         timestamp=datetime.now()
     )
     
-    # Add links with clickable format
+    # Add links with clickable format (limit to prevent Discord embed size errors)
     link_text = ""
-    for i, link in enumerate(user_links, 1):
+    limited_links = user_links[:8]  # Limit to 8 links to stay under character limit
+    
+    for i, link in enumerate(limited_links, 1):
         domain = link['domain_name']
         server = link['server_name']
         created = link['created_at']
@@ -705,6 +749,10 @@ async def mylinks_command(ctx):
         
         clickable_url = f"http://{domain}" if not domain.startswith(('http://', 'https://')) else domain
         link_text += f"{i}. [{domain}]({clickable_url}) • {server} • {formatted_date}\n"
+    
+    # Add note if there are more links
+    if len(user_links) > 8:
+        link_text += f"\n... and {len(user_links) - 8} more links"
     
     embed.add_field(
         name="🔗 Your Domains",

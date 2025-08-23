@@ -1,73 +1,7 @@
 nohup: ignoring input
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
-[2025-08-23 01:15:56] [INFO    ] discord.client: logging in using static token
+[2025-08-23 01:20:28] [INFO    ] discord.client: logging in using static token
 INFO:discord.client:logging in using static token
-[2025-08-23 01:15:57] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: cc5edc9695a66b14f1a94555b6c7d786).
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: cc5edc9695a66b14f1a94555b6c7d786).
+[2025-08-23 01:20:28] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 61f48a59d37b162fca99c794583e718e).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 61f48a59d37b162fca99c794583e718e).
 INFO:__main__:Domain-Next#7897 has connected to Discord!
-[2025-08-23 01:18:36] [ERROR   ] discord.ext.commands.bot: Ignoring exception in command mylinks
-Traceback (most recent call last):
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 265, in wrapped
-    ret = await coro(*args, **kwargs)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/discord_bot.py", line 724, in mylinks_command
-    await ctx.send(embed=embed)
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/context.py", line 1113, in send
-    return await super().send(
-           ^^^^^^^^^^^^^^^^^^^
-    ...<16 lines>...
-    )  # type: ignore # The overloads don't support Optional but the implementation does
-    ^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/abc.py", line 1717, in send
-    data = await state.http.send_message(channel.id, params=params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/http.py", line 773, in request
-    raise HTTPException(response, data)
-discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
-In embeds.0.fields.0.value: Must be 1024 or fewer in length.
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/bot.py", line 1378, in invoke
-    await ctx.command.invoke(ctx)
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 1059, in invoke
-    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 274, in wrapped
-    raise CommandInvokeError(exc) from exc
-discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
-In embeds.0.fields.0.value: Must be 1024 or fewer in length.
-ERROR:discord.ext.commands.bot:Ignoring exception in command mylinks
-Traceback (most recent call last):
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 265, in wrapped
-    ret = await coro(*args, **kwargs)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/discord_bot.py", line 724, in mylinks_command
-    await ctx.send(embed=embed)
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/context.py", line 1113, in send
-    return await super().send(
-           ^^^^^^^^^^^^^^^^^^^
-    ...<16 lines>...
-    )  # type: ignore # The overloads don't support Optional but the implementation does
-    ^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/abc.py", line 1717, in send
-    data = await state.http.send_message(channel.id, params=params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/http.py", line 773, in request
-    raise HTTPException(response, data)
-discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
-In embeds.0.fields.0.value: Must be 1024 or fewer in length.
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/bot.py", line 1378, in invoke
-    await ctx.command.invoke(ctx)
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 1059, in invoke
-    await injected(*ctx.args, **ctx.kwargs)  # type: ignore
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/ubuntu/.local/lib/python3.13/site-packages/discord/ext/commands/core.py", line 274, in wrapped
-    raise CommandInvokeError(exc) from exc
-discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
-In embeds.0.fields.0.value: Must be 1024 or fewer in length.
