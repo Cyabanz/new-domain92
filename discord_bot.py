@@ -270,7 +270,7 @@ class Domain92InputModal(discord.ui.Modal):
             subdomains = self.subdomains_input.value or "random"
             
             # Execute domain92 with the provided parameters
-            result, created_domains = await run_domain92_async(
+            result, created_domains, raw_output = await run_domain92_async(
                 ip=self.server_ip,
                 number=number,
                 webhook=webhook,
@@ -288,7 +288,8 @@ class Domain92InputModal(discord.ui.Modal):
                     interaction.user, 
                     created_domains, 
                     active_sessions[self.user_id]['server_name'],
-                    self.server_ip
+                    self.server_ip,
+                    raw_output
                 )
                 
                 # Notify about DM
@@ -445,7 +446,7 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
     await ctx.send(f"Running domain92 on {session['server_name']} ({server_ip})...")
     
     try:
-        result, created_domains = await run_domain92_async(
+        result, created_domains, raw_output = await run_domain92_async(
             ip=server_ip,
             number=number,
             webhook=webhook,
@@ -463,7 +464,8 @@ async def domain92_auto_command(ctx, number: int, webhook: str = "none", auto: s
                 ctx.author, 
                 created_domains, 
                 session['server_name'],
-                server_ip
+                server_ip,
+                raw_output
             )
             
             # Notify about DM
@@ -509,7 +511,7 @@ async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str 
     await ctx.send(f"🚀 Creating {number} domains with {subdomain_display} on {session['server_name']} ({server_ip})...")
     
     try:
-        result, created_domains = await run_domain92_async(
+        result, created_domains, raw_output = await run_domain92_async(
             ip=server_ip,
             number=number,
             webhook=webhook,
@@ -527,7 +529,8 @@ async def domain92_subs_command(ctx, number: int, subdomains: str, webhook: str 
                 ctx.author, 
                 created_domains, 
                 session['server_name'],
-                server_ip
+                server_ip,
+                raw_output
             )
             
             # Notify about DM
@@ -894,7 +897,7 @@ def extract_domains_from_output(output: str) -> List[str]:
     unique_domains = list(set(domains))
     return [domain.strip() for domain in unique_domains if domain.strip()]
 
-async def send_links_to_user_dm(user, domains: List[str], server_name: str, server_ip: str):
+async def send_links_to_user_dm(user, domains: List[str], server_name: str, server_ip: str, raw_output: str = ""):
     """Send clickable domain links to user's DM"""
     try:
         if not domains:
@@ -907,6 +910,27 @@ async def send_links_to_user_dm(user, domains: List[str], server_name: str, serv
             color=0x00ff00,
             timestamp=datetime.now()
         )
+        
+        # Extract domain IDs from raw output if available
+        domain_ids = []
+        if raw_output:
+            # Look for domain IDs in the output (sequences of numbers in quotes)
+            id_pattern = r"'(\d+)'"
+            domain_ids = re.findall(id_pattern, raw_output)
+        
+        # Add domain IDs if found
+        if domain_ids:
+            # Split into chunks of 10 for better formatting
+            id_chunks = [domain_ids[i:i+10] for i in range(0, len(domain_ids), 10)]
+            id_text = ""
+            for chunk in id_chunks:
+                id_text += ", ".join(chunk) + "\n"
+            
+            embed.add_field(
+                name="🎯 Generated Domain IDs",
+                value=f"```{id_text.strip()}```",
+                inline=False
+            )
         
         # Add clickable links
         link_text = ""
@@ -1014,11 +1038,19 @@ async def run_domain92_async(ip: str, number: int, webhook: str = "none", auto: 
         
         result = "\n".join(output_lines) if output_lines else "✅ Domain92 completed successfully"
         
-        # Return both result and created domains
-        return result, created_domains
+        # Get raw output for domain IDs
+        raw_output = ""
+        if stdout:
+            raw_output = stdout.decode()
+        elif os.path.exists(outfile.replace('.txt', '_raw.txt')):
+            with open(outfile.replace('.txt', '_raw.txt'), 'r') as f:
+                raw_output = f.read()
+        
+        # Return result, created domains, and raw output
+        return result, created_domains, raw_output
         
     except Exception as e:
-        return f"❌ Error running domain92: {str(e)}", []
+        return f"❌ Error running domain92: {str(e)}", [], ""
 
 # Load bot token from environment or config file
 def load_config():

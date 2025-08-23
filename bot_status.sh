@@ -51,3 +51,8 @@ echo "=== Access Controls ==="
 echo "🔒 Allowed Server: 1394337103441301524"
 echo "♾️ Unlimited User: 1058841701495615630"
 echo "📩 DM Links: Loading emoji <:1320138023291060386:1403395950625427519>"
+echo
+echo "=== NEW FEATURE ==="
+echo "🎯 Domain IDs: Now included in DM embeds (like: 308151, 308162, etc.)"
+echo "🔗 Clickable Links: Still included as before"
+echo "📩 Complete Output: Both domain IDs and formatted links in DMs"
